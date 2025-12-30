@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bengaluru Transit Planner</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        /* Additional styles specific to transit planner */
+        .transit-planner {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .input-field {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .checkbox-group input {
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .results {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .route-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .route-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .route-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        .route-stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .stat {
+            flex: 1;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .route-steps {
+            margin-top: 20px;
+        }
+        
+        .step {
+            padding: 15px;
+            border-left: 3px solid var(--secondary-color);
+            margin-bottom: 15px;
+            background-color: #f8f9fa;
+            border-radius: 0 4px 4px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .step:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .transfer {
+            border-left-color: var(--warning-color);
+        }
+        
+        .map-container {
+            height: 400px;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .error-message {
+            color: var(--danger-color);
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(231, 76, 60, 0.1);
+            border-radius: 4px;
+            margin-top: 20px;
+            display: none;
+            border-left: 4px solid var(--danger-color);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--secondary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Animations for route steps */
+        .step {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        
+        .step.animate {
+            animation: slideInStep 0.5s ease forwards;
+        }
+        
+        @keyframes slideInStep {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .route-stats {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .stat {
+                flex: 0 0 calc(50% - 10px);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .stat {
+                flex: 0 0 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="section-title">
+            <h2>Bengaluru Transit Planner</h2>
+            <p>Find the optimal route between any two points in Bengaluru</p>
+        </div>
+        
+        <div class="transit-planner animate-on-scroll">
+            <div class="input-group">
+                <div class="input-field">
+                    <label for="origin" class="form-label">Origin:</label>
+                    <select id="origin" class="form-control">
+                        <option value="Majestic">Majestic</option>
+                        <option value="Whitefield">Whitefield</option>
+                        <option value="Electronic City">Electronic City</option>
+                        <option value="Hebbal">Hebbal</option>
+                        <option value="Jayanagar">Jayanagar</option>
+                        <option value="Banashankari">Banashankari</option>
+                        <option value="Kengeri">Kengeri</option>
+                        <option value="Yelahanka">Yelahanka</option>
+                        <option value="Silk Board">Silk Board</option>
+                        <option value="MG Road">MG Road</option>
+                        <option value="Indiranagar">Indiranagar</option>
+                        <option value="Koramangala">Koramangala</option>
+                        <option value="HSR Layout">HSR Layout</option>
+                        <option value="BTM Layout">BTM Layout</option>
+                        <option value="JP Nagar">JP Nagar</option>
+                        <option value="Marathahalli">Marathahalli</option>
+                    </select>
+                </div>
+                
+                <div class="input-field">
+                    <label for="destination" class="form-label">Destination:</label>
+                    <select id="destination" class="form-control">
+                        <option value="Electronic City">Electronic City</option>
+                        <option value="Majestic">Majestic</option>
+                        <option value="Whitefield">Whitefield</option>
+                        <option value="Hebbal">Hebbal</option>
+                        <option value="Jayanagar">Jayanagar</option>
+                        <option value="Banashankari">Banashankari</option>
+                        <option value="Kengeri">Kengeri</option>
+                        <option value="Yelahanka">Yelahanka</option>
+                        <option value="Silk Board">Silk Board</option>
+                        <option value="MG Road">MG Road</option>
+                        <option value="Indiranagar">Indiranagar</option>
+                        <option value="Koramangala">Koramangala</option>
+                        <option value="HSR Layout">HSR Layout</option>
+                        <option value="BTM Layout">BTM Layout</option>
+                        <option value="JP Nagar">JP Nagar</option>
+                        <option value="Marathahalli">Marathahalli</option>
+                    </select>
+                </div>
+                
+                <div class="input-field">
+                    <label for="time" class="form-label">Departure Time:</label>
+                    <select id="time" class="form-control">
+                        <option value="current">Current Time</option>
+                        <option value="morning">Morning Peak (9 AM)</option>
+                        <option value="evening">Evening Peak (6 PM)</option>
+                        <option value="offpeak">Off-Peak (2 PM)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="show-alternatives">
+                <label for="show-alternatives">Show alternative routes</label>
+            </div>
+            
+            <button id="plan-journey" class="btn btn-primary">
+                <i class="fas fa-route"></i> Plan Journey
+            </button>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Planning your journey...</p>
+            </div>
+            
+            <div class="error-message" id="error-message">
+                <i class="fas fa-exclamation-triangle"></i> No route found between the selected stations. Please try different stations.
+            </div>
+            
+            <div class="results" id="results">
+                <div class="route-card" id="primary-route">
+                    <div class="route-header">
+                        <div class="route-title">
+                            <i class="fas fa-star"></i> Optimal Route: <span id="route-title"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="route-stats">
+                        <div class="stat">
+                            <div class="stat-value" id="time-value">45m</div>
+                            <div class="stat-label"><i class="fas fa-clock"></i> Total Time</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="distance-value">12.5 km</div>
+                            <div class="stat-label"><i class="fas fa-road"></i> Distance</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="fare-value">₹25</div>
+                            <div class="stat-label"><i class="fas fa-ticket-alt"></i> Fare</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="transfers-value">1</div>
+                            <div class="stat-label"><i class="fas fa-exchange-alt"></i> Transfers</div>
+                        </div>
+                    </div>
+                    
+                    <div class="route-stats">
+                        <div class="stat">
+                            <div class="stat-value" id="departure-value">14:30</div>
+                            <div class="stat-label"><i class="fas fa-sign-out-alt"></i> Departure</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="arrival-value">15:15</div>
+                            <div class="stat-label"><i class="fas fa-sign-in-alt"></i> Arrival</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="traffic-value">Normal</div>
+                            <div class="stat-label"><i class="fas fa-car"></i> Traffic</div>
+                        </div>
+                    </div>
+                    
+                    <div class="route-steps" id="route-steps">
+                        <!-- Steps will be added here -->
+                    </div>
+                    
+                    <div class="map-container" id="map">
+                        <!-- Map will be displayed here -->
+                    </div>
+                </div>
+                
+                <div id="alternative-routes">
+                    <!-- Alternative routes will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Station coordinates (simplified for Bengaluru area)
+        const stationCoords = {
+            "Majestic": [12.9767, 77.5713],
+            "Whitefield": [12.9698, 77.7500],
+            "Electronic City": [12.8399, 77.6770],
+            "Hebbal": [13.0358, 77.5920],
+            "Jayanagar": [12.9250, 77.5938],
+            "Banashankari": [12.9175, 77.5467],
+            "Kengeri": [12.8987, 77.4877],
+            "Yelahanka": [13.1004, 77.5963],
+            "Silk Board": [12.9170, 77.6226],
+            "MG Road": [12.9747, 77.6080],
+            "Indiranagar": [12.9784, 77.6408],
+            "Koramangala": [12.9352, 77.6245],
+            "HSR Layout": [12.9116, 77.6474],
+            "BTM Layout": [12.9166, 77.6101],
+            "JP Nagar": [12.9077, 77.5851],
+            "Marathahalli": [12.9591, 77.6974]
+        };
+
+        // Define routes (simplified)
+        const routes = [
+            { from: "Majestic", to: "MG Road", routeId: "500A", type: "regular", time: 15 },
+            { from: "MG Road", to: "Indiranagar", routeId: "500A", type: "regular", time: 12 },
+            { from: "Indiranagar", to: "Marathahalli", routeId: "500A", type: "regular", time: 20 },
+            { from: "Marathahalli", to: "Whitefield", routeId: "500A", type: "regular", time: 25 },
+            
+            { from: "Majestic", to: "Silk Board", routeId: "500B", type: "regular", time: 30 },
+            { from: "Silk Board", to: "Electronic City", routeId: "500B", type: "regular", time: 20 },
+            
+            { from: "Majestic", to: "MG Road", routeId: "501", type: "regular", time: 15 },
+            { from: "MG Road", to: "Hebbal", routeId: "501", type: "regular", time: 25 },
+            { from: "Hebbal", to: "Yelahanka", routeId: "501", type: "regular", time: 20 },
+            
+            { from: "Majestic", to: "JP Nagar", routeId: "502", type: "regular", time: 25 },
+            { from: "JP Nagar", to: "Jayanagar", routeId: "502", type: "regular", time: 10 },
+            { from: "Jayanagar", to: "Banashankari", routeId: "502", type: "regular", time: 15 },
+            
+            { from: "Whitefield", to: "Marathahalli", routeId: "503", type: "regular", time: 25 },
+            { from: "Marathahalli", to: "Indiranagar", routeId: "503", type: "regular", time: 20 },
+            { from: "Indiranagar", to: "MG Road", routeId: "503", type: "regular", time: 12 },
+            { from: "MG Road", to: "Hebbal", routeId: "503", type: "regular", time: 25 },
+            
+            { from: "Whitefield", to: "Marathahalli", routeId: "504", type: "regular", time: 25 },
+            { from: "Marathahalli", to: "Koramangala", routeId: "504", type: "regular", time: 20 },
+            { from: "Koramangala", to: "BTM Layout", routeId: "504", type: "regular", time: 15 },
+            { from: "BTM Layout", to: "JP Nagar", routeId: "504", type: "regular", time: 15 },
+            { from: "JP Nagar", to: "Banashankari", routeId: "504", type: "regular", time: 15 },
+            
+            { from: "Jayanagar", to: "BTM Layout", routeId: "505", type: "regular", time: 15 },
+            { from: "BTM Layout", to: "HSR Layout", routeId: "505", type: "regular", time: 15 },
+            { from: "HSR Layout", to: "Marathahalli", routeId: "505", type: "regular", time: 20 },
+            
+            { from: "Silk Board", to: "HSR Layout", routeId: "506", type: "regular", time: 10 },
+            { from: "HSR Layout", to: "Koramangala", routeId: "506", type: "regular", time: 10 },
+            { from: "Koramangala", to: "Indiranagar", routeId: "506", type: "regular", time: 15 },
+            
+            { from: "Hebbal", to: "Koramangala", routeId: "507", type: "express", time: 35 },
+            { from: "Koramangala", to: "Electronic City", routeId: "507", type: "express", time: 25 },
+            
+            { from: "Whitefield", to: "Electronic City", routeId: "508", type: "express", time: 60 },
+            
+            { from: "Kengeri", to: "Majestic", routeId: "509", type: "regular", time: 40 },
+            { from: "Majestic", to: "Yelahanka", routeId: "509", type: "regular", time: 45 }
+        ];
+
+        // Add reverse routes for bidirectional travel
+        const reverseRoutes = routes.map(route => ({
+            from: route.to,
+            to: route.from,
+            routeId: route.routeId,
+            type: route.type,
+            time: route.time
+        }));
+
+        const allRoutes = [...routes, ...reverseRoutes];
+
+        // Initialize the transit planner
+        document.addEventListener('DOMContentLoaded', function() {
+            const planJourneyBtn = document.getElementById('plan-journey');
+            
+            if (planJourneyBtn) {
+                planJourneyBtn.addEventListener('click', function() {
+                    // Show loading
+                    document.getElementById('loading').style.display = 'block';
+                    document.getElementById('results').style.display = 'none';
+                    document.getElementById('error-message').style.display = 'none';
+                    
+                    // Simulate API call
+                    setTimeout(function() {
+                        // Hide loading
+                        document.getElementById('loading').style.display = 'none';
+                        
+                        const origin = document.getElementById('origin').value;
+                        const destination = document.getElementById('destination').value;
+                        
+                        if (origin === destination) {
+                            // Show error
+                            document.getElementById('error-message').style.display = 'block';
+                        } else {
+                            // Show results
+                            document.getElementById('results').style.display = 'block';
+                            
+                            // Update route title
+                            document.getElementById('route-title').textContent = origin + ' to ' + destination;
+                            
+                            // Generate route steps
+                            generateRouteSteps(origin, destination);
+                            
+                            // Initialize map if available
+                            initMap(origin, destination);
+                            
+                            // Update stats
+                            updateRouteStats(origin, destination);
+                            
+                            // Show alternative routes if checked
+                            if (document.getElementById('show-alternatives').checked) {
+                                generateAlternativeRoutes(origin, destination);
+                            } else {
+                                document.getElementById('alternative-routes').innerHTML = '';
+                            }
+                        }
+                    }, 1500);
+                });
+            }
+        });
+
+        // Generate route steps based on origin and destination
+        function generateRouteSteps(origin, destination) {
+            const routeStepsContainer = document.getElementById('route-steps');
+            
+            if (!routeStepsContainer) return;
+            
+            // Clear previous steps
+            routeStepsContainer.innerHTML = '';
+            
+            // Find a route between origin and destination
+            const routeSegments = findRoute(origin, destination);
+            
+            if (routeSegments.length > 0) {
+                routeSegments.forEach((segment, index) => {
+                    const step = document.createElement('div');
+                    step.className = 'step';
+                    
+                    if (index > 0 && routeSegments[index-1].routeId !== segment.routeId) {
+                        step.classList.add('transfer');
+                    }
+                    
+                    let icon = segment.type === 'express' ? 'fa-bus-alt' : 'fa-bus';
+                    let typeLabel = segment.type === 'express' ? 'Express' : 'Regular';
+                    
+                    step.innerHTML = `
+                        <strong><i class="fas ${icon}"></i> ${segment.routeId} (${typeLabel})</strong>: 
+                        ${segment.from} to ${segment.to} (${segment.time} min)
+                    `;
+                    
+                    routeStepsContainer.appendChild(step);
+                    
+                    // Add animation with delay
+                    setTimeout(() => {
+                        step.classList.add('animate');
+                    }, index * 200);
+                });
+            } else {
+                routeStepsContainer.innerHTML = '<div class="step animate">No direct route found. Please try different stations.</div>';
+            }
+        }
+
+        // Find a route between two stations
+        function findRoute(origin, destination) {
+            // This is a simplified version - in a real app, this would use a pathfinding algorithm
+            // For demo purposes, we'll just return some hardcoded routes
+            
+            if (origin === "Majestic" && destination === "Whitefield") {
+                return [
+                    { from: "Majestic", to: "MG Road", routeId: "500A", type: "regular", time: 15 },
+                    { from: "MG Road", to: "Indiranagar", routeId: "500A", type: "regular", time: 12 },
+                    { from: "Indiranagar", to: "Marathahalli", routeId: "500A", type: "regular", time: 20 },
+                    { from: "Marathahalli", to: "Whitefield", routeId: "500A", type: "regular", time: 25 }
+                ];
+            } else if (origin === "Majestic" && destination === "Electronic City") {
+                return [
+                    { from: "Majestic", to: "Silk Board", routeId: "500B", type: "regular", time: 30 },
+                    { from: "Silk Board", to: "Electronic City", routeId: "500B", type: "regular", time: 20 }
+                ];
+            } else if (origin === "Whitefield" && destination === "Hebbal") {
+                return [
+                    { from: "Whitefield", to: "Marathahalli", routeId: "503", type: "regular", time: 25 },
+                    { from: "Marathahalli", to: "Indiranagar", routeId: "503", type: "regular", time: 20 },
+                    { from: "Indiranagar", to: "MG Road", routeId: "503", type: "regular", time: 12 },
+                    { from: "MG Road", to: "Hebbal", routeId: "503", type: "regular", time: 25 }
+                ];
+            } else if (origin === "Whitefield" && destination === "Banashankari") {
+                return [
+                    { from: "Whitefield", to: "Marathahalli", routeId: "504", type: "regular", time: 25 },
+                    { from: "Marathahalli", to: "Koramangala", routeId: "504", type: "regular", time: 20 },
+                    { from: "Koramangala", to: "BTM Layout", routeId: "504", type: "regular", time: 15 },
+                    { from: "BTM Layout", to: "JP Nagar", routeId: "504", type: "regular", time: 15 },
+                    { from: "JP Nagar", to: "Banashankari", routeId: "504", type: "regular", time: 15 }
+                ];
+            } else if (origin === "Hebbal" && destination === "Electronic City") {
+                return [
+                    { from: "Hebbal", to: "Koramangala", routeId: "507", type: "express", time: 35 },
+                    { from: "Koramangala", to: "Electronic City", routeId: "507", type: "express", time: 25 }
+                ];
+            } else if (origin === "Whitefield" && destination === "Electronic City") {
+                return [
+                    { from: "Whitefield", to: "Electronic City", routeId: "508", type: "express", time: 60 }
+                ];
+            } else if (origin === "Kengeri" && destination === "Yelahanka") {
+                return [
+                    { from: "Kengeri", to: "Majestic", routeId: "509", type: "regular", time: 40 },
+                    { from: "Majestic", to: "Yelahanka", routeId: "509", type: "regular", time: 45 }
+                ];
+            }
+            
+            // For other combinations, try to find a path using the defined routes
+            const path = findPath(origin, destination, allRoutes);
+            if (path.length > 0) {
+                return path;
+            }
+            
+            // Return empty array if no route found
+            return [];
+        }
+
+        // Simple pathfinding algorithm
+        function findPath(start, end, routeList) {
+            // This is a simplified breadth-first search
+            const queue = [{
+                station: start,
+                path: [],
+                visited: new Set([start])
+            }];
+            
+            while (queue.length > 0) {
+                const { station, path, visited } = queue.shift();
+                
+                if (station === end) {
+                    return path;
+                }
+                
+                // Find all routes from current station
+                const nextRoutes = routeList.filter(route => route.from === station);
+                
+                for (const route of nextRoutes) {
+                    if (!visited.has(route.to)) {
+                        const newVisited = new Set(visited);
+                        newVisited.add(route.to);
+                        
+                        queue.push({
+                            station: route.to,
+                            path: [...path, route],
+                            visited: newVisited
+                        });
+                    }
+                }
+            }
+            
+            return [];
+        }
+
+        // Update route statistics
+        function updateRouteStats(origin, destination) {
+            const routeSegments = findRoute(origin, destination);
+            
+            if (routeSegments.length > 0) {
+                // Calculate total time
+                const totalTime = routeSegments.reduce((sum, segment) => sum + segment.time, 0);
+                document.getElementById('time-value').textContent = totalTime + 'm';
+                
+                // Calculate distance (simplified)
+                let totalDistance = 0;
+                routeSegments.forEach(segment => {
+                    if (stationCoords[segment.from] && stationCoords[segment.to]) {
+                        totalDistance += calculateDistance(
+                            stationCoords[segment.from][0], stationCoords[segment.from][1],
+                            stationCoords[segment.to][0], stationCoords[segment.to][1]
+                        );
+                    }
+                });
+                document.getElementById('distance-value').textContent = totalDistance.toFixed(1) + ' km';
+                
+                // Calculate fare (simplified)
+                const baseFare = 10;
+                const farePerKm = 1.5;
+                const fare = Math.round(baseFare + (totalDistance * farePerKm));
+                document.getElementById('fare-value').textContent = '₹' + fare;
+                
+                // Count transfers
+                let transfers = 0;
+                let currentRouteId = '';
+                routeSegments.forEach(segment => {
+                    if (currentRouteId && currentRouteId !== segment.routeId) {
+                        transfers++;
+                    }
+                    currentRouteId = segment.routeId;
+                });
+                document.getElementById('transfers-value').textContent = transfers;
+                
+                // Set departure and arrival times
+                const now = new Date();
+                const departureTime = formatTime(now);
+                
+                const arrivalTime = new Date(now.getTime() + totalTime * 60000);
+                const arrivalTimeStr = formatTime(arrivalTime);
+                
+                document.getElementById('departure-value').textContent = departureTime;
+                document.getElementById('arrival-value').textContent = arrivalTimeStr;
+                
+                // Set traffic status based on time of day
+                const hour = now.getHours();
+                let trafficStatus = 'Normal';
+                
+                if ((hour >= 8 && hour <= 10) || (hour >= 17 && hour <= 19)) {
+                    trafficStatus = 'Heavy';
+                } else if ((hour >= 7 && hour < 8) || (hour > 10 && hour <= 11) || (hour >= 16 && hour < 17) || (hour > 19 && hour <= 20)) {
+                    trafficStatus = 'Moderate';
+                }
+                
+                document.getElementById('traffic-value').textContent = trafficStatus;
+            }
+        }
+
+        // Generate alternative routes
+        function generateAlternativeRoutes(origin, destination) {
+            const alternativeRoutesContainer = document.getElementById('alternative-routes');
+            
+            if (!alternativeRoutesContainer) return;
+            
+            // Clear previous alternatives
+            alternativeRoutesContainer.innerHTML = '';
+            
+            // Get main route
+            const mainRoute = findRoute(origin, destination);
+            
+            if (mainRoute.length === 0) return;
+            
+            // Generate 2 alternative routes
+            const alternatives = [
+                generateAlternative1(origin, destination, mainRoute),
+                generateAlternative2(origin, destination, mainRoute)
+            ];
+            
+            alternatives.forEach((alternative, index) => {
+                if (alternative.length > 0) {
+                    const altCard = document.createElement('div');
+                    altCard.className = 'route-card animate-on-scroll';
+                    
+                    // Calculate stats
+                    const totalTime = alternative.reduce((sum, segment) => sum + segment.time, 0);
+                    
+                    let totalDistance = 0;
+                    alternative.forEach(segment => {
+                        if (stationCoords[segment.from] && stationCoords[segment.to]) {
+                            totalDistance += calculateDistance(
+                                stationCoords[segment.from][0], stationCoords[segment.from][1],
+                                stationCoords[segment.to][0], stationCoords[segment.to][1]
+                            );
+                        }
+                    });
+                    
+                    // Count transfers
+                    let transfers = 0;
+                    let currentRouteId = '';
+                    alternative.forEach(segment => {
+                        if (currentRouteId && currentRouteId !== segment.routeId) {
+                            transfers++;
+                        }
+                        currentRouteId = segment.routeId;
+                    });
+                    
+                    // Create alternative route card
+                    altCard.innerHTML = `
+                        <div class="route-header">
+                            <div class="route-title">
+                                <i class="fas fa-map-signs"></i> Alternative ${index + 1}: ${origin} to ${destination}
+                            </div>
+                        </div>
+                        
+                        <div class="route-stats">
+                            <div class="stat">
+                                <div class="stat-value">${totalTime}m</div>
+                                <div class="stat-label"><i class="fas fa-clock"></i> Total Time</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${totalDistance.toFixed(1)} km</div>
+                                <div class="stat-label"><i class="fas fa-road"></i> Distance</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">₹${Math.round(10 + (totalDistance * 1.5))}</div>
+                                <div class="stat-label"><i class="fas fa-ticket-alt"></i> Fare</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${transfers}</div>
+                                <div class="stat-label"><i class="fas fa-exchange-alt"></i> Transfers</div>
+                            </div>
+                        </div>
+                        
+                        <div class="route-steps">
+                            ${alternative.map((segment, i) => {
+                                let stepClass = 'step';
+                                if (i > 0 && alternative[i-1].routeId !== segment.routeId) {
+                                    stepClass += ' transfer';
+                                }
+                                
+                                let icon = segment.type === 'express' ? 'fa-bus-alt' : 'fa-bus';
+                                let typeLabel = segment.type === 'express' ? 'Express' : 'Regular';
+                                
+                                return `
+                                    <div class="${stepClass}">
+                                        <strong><i class="fas ${icon}"></i> ${segment.routeId} (${typeLabel})</strong>: 
+                                        ${segment.from} to ${segment.to} (${segment.time} min)
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    `;
+                    
+                    alternativeRoutesContainer.appendChild(altCard);
+                    
+                    // Animate steps
+                    setTimeout(() => {
+                        const steps = altCard.querySelectorAll('.step');
+                        steps.forEach((step, i) => {
+                            setTimeout(() => {
+                                step.classList.add('animate');
+                            }, i * 200);
+                        });
+                    }, 500);
+                }
+            });
+        }
+
+        // Generate first alternative route
+        function generateAlternative1(origin, destination, mainRoute) {
+            // This is a simplified version - in a real app, this would use a pathfinding algorithm
+            // For demo purposes, we'll just return some hardcoded alternatives
+            
+            if (origin === "Majestic" && destination === "Whitefield") {
+                return [
+                    { from: "Majestic", to: "MG Road", routeId: "501", type: "regular", time: 15 },
+                    { from: "MG Road", to: "Indiranagar", routeId: "500A", type: "regular", time: 12 },
+                    { from: "Indiranagar", to: "Marathahalli", routeId: "500A", type: "regular", time: 20 },
+                    { from: "Marathahalli", to: "Whitefield", routeId: "500A", type: "regular", time: 25 }
+                ];
+            } else if (origin === "Majestic" && destination === "Electronic City") {
+                return [
+                    { from: "Majestic", to: "JP Nagar", routeId: "502", type: "regular", time: 25 },
+                    { from: "JP Nagar", to: "BTM Layout", routeId: "504", type: "regular", time: 15 },
+                    { from: "BTM Layout", to: "HSR Layout", routeId: "505", type: "regular", time: 15 },
+                    { from: "HSR Layout", to: "Electronic City", routeId: "506", type: "express", time: 20 }
+                ];
+            } else if (origin === "Whitefield" && destination === "Electronic City") {
+                return [
+                    { from: "Whitefield", to: "Marathahalli", routeId: "504", type: "regular", time: 25 },
+                    { from: "Marathahalli", to: "HSR Layout", routeId: "505", type: "regular", time: 20 },
+                    { from: "HSR Layout", to: "Electronic City", routeId: "506", type: "express", time: 20 }
+                ];
+            }
+            
+            // For other combinations, modify the main route slightly if possible
+            if (mainRoute.length > 1) {
+                // Try to find an alternative segment for the first part of the journey
+                const firstSegment = mainRoute[0];
+                const alternativeFirstSegment = allRoutes.find(route => 
+                    route.from === firstSegment.from && 
+                    route.to !== firstSegment.to && 
+                    route.routeId !== firstSegment.routeId
+                );
+                
+                if (alternativeFirstSegment) {
+                    // Find a way to connect back to the original route
+                    const connector = allRoutes.find(route => 
+                        route.from === alternativeFirstSegment.to && 
+                        mainRoute.some(segment => segment.from === route.to)
+                    );
+                    
+                    if (connector) {
+                        // Find where to reconnect to the main route
+                        const reconnectIndex = mainRoute.findIndex(segment => segment.from === connector.to);
+                        
+                        if (reconnectIndex !== -1) {
+                            return [
+                                alternativeFirstSegment,
+                                connector,
+                                ...mainRoute.slice(reconnectIndex)
+                            ];
+                        }
+                    }
+                }
+            }
+            
+            // If no specific alternative, return an empty array
+            return [];
+        }
+
+        // Generate second alternative route
+        function generateAlternative2(origin, destination, mainRoute) {
+            // This is a simplified version - in a real app, this would use a pathfinding algorithm
+            // For demo purposes, we'll just return some hardcoded alternatives
+            
+            if (origin === "Majestic" && destination === "Whitefield") {
+                return [
+                    { from: "Majestic", to: "Silk Board", routeId: "500B", type: "regular", time: 30 },
+                    { from: "Silk Board", to: "HSR Layout", routeId: "506", type: "regular", time: 10 },
+                    { from: "HSR Layout", to: "Marathahalli", routeId: "505", type: "regular", time: 20 },
+                    { from: "Marathahalli", to: "Whitefield", routeId: "500A", type: "regular", time: 25 }
+                ];
+            } else if (origin === "Majestic" && destination === "Electronic City") {
+                return [
+                    { from: "Majestic", to: "MG Road", routeId: "500A", type: "regular", time: 15 },
+                    { from: "MG Road", to: "Indiranagar", routeId: "500A", type: "regular", time: 12 },
+                    { from: "Indiranagar", to: "Koramangala", routeId: "506", type: "regular", time: 15 },
+                    { from: "Koramangala", to: "Electronic City", routeId: "507", type: "express", time: 25 }
+                ];
+            }
+            
+            // For other combinations, try to find a completely different route if possible
+            const directRoute = allRoutes.find(route => 
+                route.from === origin && route.to === destination
+            );
+            
+            if (directRoute) {
+                return [directRoute];
+            }
+            
+            // If no specific alternative, return an empty array
+            return [];
+        }
+
+        // Initialize map
+        function initMap(origin, destination) {
+            const mapContainer = document.getElementById('map');
+            
+            if (!mapContainer || typeof L === 'undefined') return;
+            
+            // Clear previous map
+            mapContainer.innerHTML = '';
+            
+            // Create map
+            const map = L.map(mapContainer).setView([12.9716, 77.5946], 12);
+            
+            // Add tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            // Add markers for origin and destination
+            if (stationCoords[origin]) {
+                L.marker(stationCoords[origin]).addTo(map)
+                    .bindPopup(`<b>${origin}</b><br>Starting Point`)
+                    .openPopup();
+            }
+            
+            if (stationCoords[destination]) {
+                L.marker(stationCoords[destination]).addTo(map)
+                    .bindPopup(`<b>${destination}</b><br>Destination`);
+            }
+            
+            // Draw route line
+            const routeSegments = findRoute(origin, destination);
+            const routePoints = [];
+            
+            if (routeSegments.length > 0) {
+                // Add origin
+                if (stationCoords[origin]) {
+                    routePoints.push(stationCoords[origin]);
+                }
+                
+                // Add intermediate points
+                routeSegments.forEach(segment => {
+                    if (stationCoords[segment.to]) {
+                        routePoints.push(stationCoords[segment.to]);
+                    }
+                });
+                
+                // Create polyline
+                if (routePoints.length > 1) {
+                    L.polyline(routePoints, {
+                        color: '#3498db',
+                        weight: 5,
+                        opacity: 0.7,
+                        lineJoin: 'round'
+                    }).addTo(map);
+                    
+                    // Add intermediate markers
+                    routeSegments.forEach(segment => {
+                        if (segment.to !== destination && stationCoords[segment.to]) {
+                            L.circleMarker(stationCoords[segment.to], {
+                                color: '#3498db',
+                                fillColor: '#fff',
+                                fillOpacity: 1,
+                                radius: 5,
+                                weight: 2
+                            }).addTo(map)
+                            .bindPopup(`<b>${segment.to}</b><br>Transfer Point`);
+                        }
+                    });
+                    
+                    // Fit bounds to show the entire route
+                    map.fitBounds(routePoints);
+                }
+            }
+        }
+
+        // Helper function to calculate distance between two coordinates
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of the earth in km
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2); 
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+            const distance = R * c; // Distance in km
+            return distance;
+        }
+
+        function deg2rad(deg) {
+            return deg * (Math.PI/180);
+        }
+
+        // Helper function to format time
+        function formatTime(date) {
+            let hours = date.getHours();
+            let minutes = date.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            
+            return hours + ':' + minutes + ' ' + ampm;
+        }
+    </script>
+</body>
+</html>

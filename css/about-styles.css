@@ -1,0 +1,307 @@
+/* About Module Styles */
+.about-content {
+    padding: 30px 0;
+}
+
+.about-content .card-container {
+    margin-bottom: 30px;
+}
+
+.about-content .row {
+    margin-bottom: 30px;
+}
+
+.about-content .col-6,
+.about-content .col-md-12 {
+    padding: 15px;
+}
+
+.about-content .card {
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.about-content .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.about-content .card-header {
+    background-color: #3498db;
+    color: white;
+    padding: 18px 25px;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+.about-content .card-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.about-content .card-header i {
+    margin-right: 12px;
+    font-size: 20px;
+}
+
+.about-content .card-body {
+    padding: 25px 30px;
+}
+
+.about-content .card-body p {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.about-content .card-body p:last-child {
+    margin-bottom: 0;
+}
+
+/* Feature List */
+.feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.feature-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: flex-start;
+    line-height: 1.5;
+}
+
+.feature-list li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.feature-list li:first-child {
+    padding-top: 0;
+}
+
+.feature-list li strong {
+    color: #2c3e50;
+    margin-right: 5px;
+    font-weight: 600;
+}
+
+/* Tech Stack List */
+.tech-stack-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 25px 0;
+}
+
+.tech-stack-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    line-height: 1.5;
+}
+
+.tech-stack-list li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.tech-stack-list li:first-child {
+    padding-top: 0;
+}
+
+.tech-stack-list li strong {
+    color: #2c3e50;
+    display: inline-block;
+    min-width: 140px;
+    font-weight: 600;
+}
+
+.tech-icons {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px dashed #eee;
+}
+
+.tech-icons i {
+    font-size: 36px;
+    margin: 0 20px;
+    color: #3498db;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.tech-icons i:hover {
+    transform: scale(1.2);
+    color: #2980b9;
+}
+
+/* Beneficiary Groups */
+.beneficiary-group {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.beneficiary-group:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.beneficiary-group h4 {
+    color: #2c3e50;
+    font-size: 17px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.beneficiary-group h4 i {
+    margin-right: 12px;
+    color: #3498db;
+    font-size: 18px;
+}
+
+.beneficiary-group p {
+    margin: 0;
+    padding-left: 30px;
+    line-height: 1.6;
+}
+
+/* Contact Card */
+.contact-card {
+    background-color: #f8f9fa;
+    margin-top: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.contact-card .card-body {
+    padding: 30px;
+}
+
+.contact-card h3 {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
+.contact-card p {
+    color: #555;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.contact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+
+.contact-list li {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+}
+
+.contact-list li i {
+    color: #3498db;
+    margin-right: 15px;
+    width: 20px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.contact-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100%;
+    justify-content: center;
+}
+
+.contact-buttons .btn {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.contact-buttons .btn i {
+    margin-right: 10px;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+    .contact-buttons {
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 992px) {
+    .about-content .row {
+        margin-bottom: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-content .card {
+        margin-bottom: 30px;
+    }
+    
+    .about-content .card-header {
+        padding: 15px 20px;
+    }
+    
+    .about-content .card-body {
+        padding: 20px;
+    }
+    
+    .tech-icons i {
+        font-size: 30px;
+        margin: 0 15px;
+    }
+    
+    .spacer {
+        height: 0 !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .about-content .card-header i {
+        font-size: 18px;
+    }
+    
+    .about-content .card-header h3 {
+        font-size: 16px;
+    }
+    
+    .tech-icons {
+        flex-wrap: wrap;
+        padding-top: 15px;
+        margin-top: 20px;
+    }
+    
+    .tech-icons i {
+        margin: 10px;
+        font-size: 28px;
+    }
+    
+    .beneficiary-group h4 {
+        font-size: 16px;
+    }
+    
+    .beneficiary-group p {
+        padding-left: 25px;
+    }
+}

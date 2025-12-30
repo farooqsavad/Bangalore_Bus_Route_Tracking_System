@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urban Transport Analytics</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/chart-styles.css">
+    <link rel="stylesheet" href="css/about-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="preloader-content">
+            <div class="preloader-spinner"></div>
+            <h2>Urban Transport Analytics</h2>
+            <p>Loading your dashboard...</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="img/logo.png" alt="Logo" id="logo-placeholder">
+                    <h1>Urban Transport Analytics</h1>
+                </div>
+                <nav>
+                    <ul class="nav-menu">
+                        <li class="nav-item"><a href="#dashboard" class="nav-link active" data-module="dashboard">Dashboard</a></li>
+                        <li class="nav-item"><a href="#route-planner" class="nav-link" data-module="route-planner">Routes</a></li>
+                        <li class="nav-item"><a href="#analytics" class="nav-link" data-module="analytics">Analytics</a></li>
+                        <li class="nav-item"><a href="#traffic" class="nav-link" data-module="traffic">Traffic</a></li>
+                        <li class="nav-item"><a href="#optimization" class="nav-link" data-module="optimization">Optimization</a></li>
+                        <li class="nav-item"><a href="#reports" class="nav-link" data-module="reports">Reports</a></li>
+                        <li class="nav-item"><a href="#settings" class="nav-link" data-module="settings">Settings</a></li>
+                        <li class="nav-item"><a href="#about" class="nav-link" data-module="about">About</a></li>
+                    </ul>
+                    <button class="mobile-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Dashboard Module -->
+            <section id="dashboard" class="module active">
+                <div class="section-title">
+                    <h2>Transport Network Dashboard</h2>
+                    <p>Overview of key metrics and performance indicators</p>
+                </div>
+                
+                <div class="dashboard-content">
+                    <div class="dashboard-stats">
+                        <div class="row">
+                            <div class="col-3 col-md-6 col-sm-12">
+                                <div class="stat-card">
+                                    <div class="stat-card-icon">
+                                        <i class="fas fa-bus"></i>
+                                    </div>
+                                    <div class="stat-card-value">1,245</div>
+                                    <div class="stat-card-label">Active Routes</div>
+                                </div>
+                            </div>
+                            <div class="col-3 col-md-6 col-sm-12">
+                                <div class="stat-card">
+                                    <div class="stat-card-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="stat-card-value">85,432</div>
+                                    <div class="stat-card-label">Daily Passengers</div>
+                                </div>
+                            </div>
+                            <div class="col-3 col-md-6 col-sm-12">
+                                <div class="stat-card">
+                                    <div class="stat-card-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div class="stat-card-value">328</div>
+                                    <div class="stat-card-label">Transit Hubs</div>
+                                </div>
+                            </div>
+                            <div class="col-3 col-md-6 col-sm-12">
+                                <div class="stat-card">
+                                    <div class="stat-card-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="stat-card-value">92%</div>
+                                    <div class="stat-card-label">On-time Performance</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-charts">
+                        <div class="row">
+                            <div class="col-8 col-md-12">
+                                <div class="chart-container">
+                                    <h3>Passenger Volume Trends</h3>
+                                    <p class="chart-description">Monthly passenger counts across all transport modes showing seasonal patterns and year-over-year growth.</p>
+                                    <canvas id="passenger-trends-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-4 col-md-12">
+                                <div class="chart-container">
+                                    <h3>Transport Mode Distribution</h3>
+                                    <p class="chart-description">Breakdown of passenger journeys by transport type (bus, metro, train, etc.) showing modal share percentages.</p>
+                                    <canvas id="transport-mode-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-6 col-md-12">
+                                <div class="chart-container">
+                                    <h3>Peak Hour Traffic</h3>
+                                    <p class="chart-description">Hourly traffic volume distribution showing morning and evening peak periods and congestion levels.</p>
+                                    <canvas id="peak-hour-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-12">
+                                <div class="chart-container">
+                                    <h3>Route Efficiency</h3>
+                                    <p class="chart-description">Comparison of route performance metrics including on-time percentage, passenger load, and fuel efficiency.</p>
+                                    <canvas id="route-efficiency-chart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Route Planner Module -->
+            <section id="route-planner" class="module">
+                <div class="section-title">
+                    <h2>Route Planning</h2>
+                    <p>Find the optimal route between any two points in the city</p>
+                </div>
+                
+                <div class="route-planner-content">
+                    <div class="transit-planner">
+                        <div class="planner-form">
+                            <div class="row">
+                                <div class="col-4 col-md-12">
+                                    <div class="form-group">
+                                        <label class="form-label" for="origin">Origin:</label>
+                                        <select class="form-control" id="origin">
+                                            <option value="Majestic">Majestic</option>
+                                            <option value="Whitefield">Whitefield</option>
+                                            <option value="Electronic City">Electronic City</option>
+                                            <option value="Hebbal">Hebbal</option>
+                                            <option value="Jayanagar">Jayanagar</option>
+                                            <option value="Banashankari">Banashankari</option>
+                                            <option value="Kengeri">Kengeri</option>
+                                            <option value="Yelahanka">Yelahanka</option>
+                                            <option value="Silk Board">Silk Board</option>
+                                            <option value="MG Road">MG Road</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-12">
+                                    <div class="form-group">
+                                        <label class="form-label" for="destination">Destination:</label>
+                                        <select class="form-control" id="destination">
+                                            <option value="Electronic City">Electronic City</option>
+                                            <option value="Majestic">Majestic</option>
+                                            <option value="Whitefield">Whitefield</option>
+                                            <option value="Hebbal">Hebbal</option>
+                                            <option value="Jayanagar">Jayanagar</option>
+                                            <option value="Banashankari">Banashankari</option>
+                                            <option value="Kengeri">Kengeri</option>
+                                            <option value="Yelahanka">Yelahanka</option>
+                                            <option value="Silk Board">Silk Board</option>
+                                            <option value="MG Road">MG Road</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-12">
+                                    <div class="form-group">
+                                        <label class="form-label" for="time">Departure Time:</label>
+                                        <select class="form-control" id="time">
+                                            <option value="current">Current Time</option>
+                                            <option value="morning">Morning Peak (9 AM)</option>
+                                            <option value="evening">Evening Peak (6 PM)</option>
+                                            <option value="offpeak">Off-Peak (2 PM)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="planner-options">
+                                <div class="checkbox-group">
+                                    <input type="checkbox" id="show-alternatives">
+                                    <label for="show-alternatives">Show alternative routes</label>
+                                </div>
+                                
+                                <button class="btn btn-primary" id="plan-journey">Plan Journey</button>
+                            </div>
+                        </div>
+                        
+                        <div class="loading" id="loading">
+                            <div class="spinner"></div>
+                            <p>Planning your journey...</p>
+                        </div>
+                        
+                        <div class="error-message" id="error-message">
+                            No route found between the selected stations. Please try different stations.
+                        </div>
+                        
+                        <div class="results" id="results">
+                            <div class="route-card" id="primary-route">
+                                <div class="route-header">
+                                    <div class="route-title">Optimal Route: <span id="route-title"></span></div>
+                                </div>
+                                
+                                <div class="route-stats">
+                                    <div class="stat">
+                                        <div class="stat-value" id="time-value">45m</div>
+                                        <div class="stat-label">Total Time</div>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="stat-value" id="distance-value">12.5 km</div>
+                                        <div class="stat-label">Distance</div>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="stat-value" id="fare-value">₹25</div>
+                                        <div class="stat-label">Fare</div>
+                                    </div>
+                                    <div class="stat">
+                                        <div class="stat-value" id="transfers-value">1</div>
+                                        <div class="stat-label">Transfers</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="route-steps" id="route-steps">
+                                    <!-- Steps will be added here -->
+                                </div>
+                                
+                                <div class="map-container route-map-container">
+                                    <div id="route-map"></div>
+                                </div>
+                            </div>
+                            
+                            <div id="alternative-routes">
+                                <!-- Alternative routes will be added here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics Module -->
+            <section id="analytics" class="module">
+                <div class="section-title">
+                    <h2>Advanced Analytics</h2>
+                    <p>In-depth analysis of transport network performance</p>
+                </div>
+                
+                <div class="analytics-content">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="chart-container">
+                                <h3>Network Performance Overview</h3>
+                                <p class="chart-description">Comprehensive view of key performance indicators across the entire transport network over time.</p>
+                                <canvas id="network-performance-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-6 col-md-12">
+                            <div class="chart-container">
+                                <h3>Route Utilization</h3>
+                                <p class="chart-description">Analysis of passenger capacity utilization across different routes, highlighting underused and overcrowded services.</p>
+                                <canvas id="route-utilization-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-12">
+                            <div class="chart-container">
+                                <h3>Passenger Demographics</h3>
+                                <p class="chart-description">Breakdown of passenger age groups, travel purposes, and frequency of use to inform service planning.</p>
+                                <canvas id="passenger-demographics-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-4 col-md-12">
+                            <div class="chart-container">
+                                <h3>Fare Collection</h3>
+                                <p class="chart-description">Revenue analysis by fare type, payment method, and time period to optimize pricing strategies.</p>
+                                <canvas id="fare-collection-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-4 col-md-12">
+                            <div class="chart-container">
+                                <h3>Operational Costs</h3>
+                                <p class="chart-description">Breakdown of maintenance, fuel, staff, and infrastructure costs to identify efficiency opportunities.</p>
+                                <canvas id="operational-costs-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-4 col-md-12">
+                            <div class="chart-container">
+                                <h3>Revenue Trends</h3>
+                                <p class="chart-description">Monthly and quarterly revenue patterns showing seasonal variations and long-term financial performance.</p>
+                                <canvas id="revenue-trends-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Traffic Module -->
+            <section id="traffic" class="module">
+                <div class="section-title">
+                    <h2>Real-time Traffic Monitoring</h2>
+                    <p>Live traffic conditions and congestion analysis</p>
+                </div>
+                
+                <div class="traffic-content">
+                    <div class="row">
+                        <div class="col-8 col-md-12">
+                            <div class="chart-container traffic-map-container">
+                                <h3>Live Traffic Map</h3>
+                                <p class="chart-description">Real-time visualization of traffic conditions across the city with color-coded congestion levels.</p>
+                                <div class="map-container">
+                                    <div id="traffic-map"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4 col-md-12">
+                            <div class="chart-container">
+                                <h3>Congestion Hotspots</h3>
+                                <p class="chart-description">Ranking of the most congested areas by severity and frequency to prioritize traffic management efforts.</p>
+                                <canvas id="congestion-hotspots-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-6 col-md-12">
+                            <div class="chart-container">
+                                <h3>Traffic Flow Analysis</h3>
+                                <p class="chart-description">Directional traffic volumes and speeds across major corridors to identify bottlenecks and flow patterns.</p>
+                                <canvas id="traffic-flow-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-12">
+                            <div class="chart-container">
+                                <h3>Delay Prediction</h3>
+                                <p class="chart-description">Forecasted travel delays for the next 24 hours based on historical patterns and current conditions.</p>
+                                <canvas id="delay-prediction-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Optimization Module -->
+            <section id="optimization" class="module">
+                <div class="section-title">
+                    <h2>Network Optimization</h2>
+                    <p>Tools and insights for optimizing the transport network</p>
+                </div>
+                
+                <div class="optimization-content">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="chart-container">
+                                <h3>Route Optimization Recommendations</h3>
+                                <p class="chart-description">AI-generated suggestions for route modifications to improve efficiency, reduce congestion, and lower emissions.</p>
+                                <canvas id="route-optimization-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-6 col-md-12">
+                            <div class="chart-container">
+                                <h3>Fleet Allocation</h3>
+                                <p class="chart-description">Optimal distribution of vehicles across routes based on demand patterns and vehicle capacity.</p>
+                                <canvas id="fleet-allocation-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-12">
+                            <div class="chart-container">
+                                <h3>Schedule Optimization</h3>
+                                <p class="chart-description">Recommended schedule adjustments to minimize wait times and improve service frequency during peak hours.</p>
+                                <canvas id="schedule-optimization-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="chart-container">
+                                <h3>Resource Utilization</h3>
+                                <p class="chart-description">Analysis of how effectively vehicles, staff, and infrastructure are being utilized across the network.</p>
+                                <canvas id="resource-utilization-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reports Module -->
+            <section id="reports" class="module">
+                <div class="section-title">
+                    <h2>Comprehensive Reports</h2>
+                    <p>Detailed reports and insights for decision making</p>
+                </div>
+                
+                <div class="reports-content">
+                    <div class="row">
+                        <div class="col-6 col-md-12">
+                            <div class="chart-container">
+                                <h3>Performance Metrics</h3>
+                                <p class="chart-description">Key performance indicators tracking on-time performance, service reliability, and customer satisfaction.</p>
+                                <canvas id="performance-metrics-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-12">
+                            <div class="chart-container">
+                                <h3>Efficiency Analysis</h3>
+                                <p class="chart-description">Comparative analysis of operational efficiency across different routes, times, and transport modes.</p>
+                                <canvas id="efficiency-analysis-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-4 col-md-12">
+                            <div class="chart-container">
+                                <h3>Environmental Impact</h3>
+                                <p class="chart-description">Emissions data and carbon footprint metrics for the entire transport network with reduction targets.</p>
+                                <canvas id="environmental-impact-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-4 col-md-12">
+                            <div class="chart-container">
+                                <h3>Cost Analysis</h3>
+                                <p class="chart-description">Breakdown of operational costs, revenue streams, and financial performance indicators.</p>
+                                <canvas id="cost-analysis-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-4 col-md-12">
+                            <div class="chart-container">
+                                <h3>Service Quality</h3>
+                                <p class="chart-description">Metrics on service quality including customer feedback, complaint resolution, and service improvements.</p>
+                                <canvas id="service-quality-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Module -->
+            <section id="settings" class="module">
+                <div class="section-title">
+                    <h2>System Settings</h2>
+                    <p>Configure system parameters and preferences</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>User Preferences</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label" for="theme">Theme:</label>
+                            <select class="form-control" id="theme">
+                                <option value="light">Light</option>
+                                <option value="dark">Dark</option>
+                                <option value="auto">Auto (System)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="data-refresh">Data Refresh Interval:</label>
+                            <select class="form-control" id="data-refresh">
+                                <option value="30">30 seconds</option>
+                                <option value="60">1 minute</option>
+                                <option value="300">5 minutes</option>
+                                <option value="600">10 minutes</option>
+                            </select>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="notifications" checked>
+                            <label for="notifications">Enable Notifications</label>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="analytics-consent" checked>
+                            <label for="analytics-consent">Allow Anonymous Usage Analytics</label>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary" id="save-settings">Save Settings</button>
+                        <button class="btn btn-outline" id="reset-settings">Reset to Default</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About Module -->
+            <section id="about" class="module">
+                <div class="section-title">
+                    <h2>About Urban Transport Analytics</h2>
+                    <p>Understanding our mission, vision, and the technology behind our platform</p>
+                </div>
+                
+                <div class="about-content">
+                    <div class="card-container">
+                        <div class="row">
+                            <div class="col-6 col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3><i class="fas fa-bullseye"></i> Our Mission</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Urban Transport Analytics is dedicated to transforming urban mobility through data-driven insights and intelligent transportation solutions. Our mission is to create more efficient, sustainable, and accessible transportation networks that improve the quality of life in cities worldwide.</p>
+                                        <p>We believe that by harnessing the power of real-time data analytics, machine learning, and advanced visualization techniques, we can help city planners, transportation authorities, and citizens make better decisions about how they move through urban spaces.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-6 col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3><i class="fas fa-chart-line"></i> Key Features</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="feature-list">
+                                            <li><strong>Real-time Traffic Monitoring:</strong> Visualize current traffic conditions across the city with color-coded congestion levels.</li>
+                                            <li><strong>Intelligent Route Planning:</strong> Find optimal routes between any two points with multiple alternatives based on current conditions.</li>
+                                            <li><strong>Predictive Analytics:</strong> Forecast traffic patterns and identify potential bottlenecks before they occur.</li>
+                                            <li><strong>Network Optimization:</strong> Identify opportunities to improve transit routes, schedules, and infrastructure.</li>
+                                            <li><strong>Performance Metrics:</strong> Track key indicators like on-time performance, passenger volume, and service efficiency.</li>
+                                            <li><strong>Customizable Reporting:</strong> Generate detailed reports on transportation network performance for stakeholders.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="spacer" style="height: 20px;"></div>
+                        
+                        <div class="row">
+                            <div class="col-6 col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3><i class="fas fa-cogs"></i> Technology Stack</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Our platform leverages cutting-edge technologies to deliver powerful transportation analytics:</p>
+                                        <ul class="tech-stack-list">
+                                            <li><strong>Data Collection:</strong> IoT sensors, GPS tracking, mobile apps, and public transit APIs</li>
+                                            <li><strong>Data Processing:</strong> Cloud-based real-time data processing with Apache Kafka and Spark</li>
+                                            <li><strong>Analytics Engine:</strong> Machine learning models for traffic prediction and route optimization</li>
+                                            <li><strong>Visualization:</strong> Interactive dashboards powered by modern web technologies</li>
+                                            <li><strong>APIs:</strong> RESTful services for integration with other city systems</li>
+                                        </ul>
+                                        <div class="tech-icons">
+                                            <i class="fab fa-python" title="Python"></i>
+                                            <i class="fab fa-js-square" title="JavaScript"></i>
+                                            <i class="fab fa-react" title="React"></i>
+                                            <i class="fab fa-aws" title="AWS"></i>
+                                            <i class="fab fa-docker" title="Docker"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-6 col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3><i class="fas fa-users"></i> Who Benefits</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="beneficiary-group">
+                                            <h4><i class="fas fa-city"></i> City Planners & Officials</h4>
+                                            <p>Make data-driven decisions about infrastructure investments, traffic management, and public transit planning.</p>
+                                        </div>
+                                        <div class="beneficiary-group">
+                                            <h4><i class="fas fa-bus"></i> Transit Operators</h4>
+                                            <p>Optimize routes, schedules, and resource allocation to improve service efficiency and passenger experience.</p>
+                                        </div>
+                                        <div class="beneficiary-group">
+                                            <h4><i class="fas fa-walking"></i> Commuters & Residents</h4>
+                                            <p>Access real-time information to plan journeys, avoid congestion, and reduce travel time.</p>
+                                        </div>
+                                        <div class="beneficiary-group">
+                                            <h4><i class="fas fa-leaf"></i> Environment</h4>
+                                            <p>Reduce emissions and fuel consumption through more efficient transportation networks.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card contact-card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-8 col-md-12">
+                                    <h3>Get in Touch</h3>
+                                    <p>Interested in learning more about Urban Transport Analytics? Contact our team:</p>
+                                    <ul class="contact-list">
+                                        <li><i class="fas fa-envelope"></i> info@urbantransport.com</li>
+                                        <li><i class="fas fa-phone"></i> +91 123 456 7890</li>
+                                        <li><i class="fas fa-map-marker-alt"></i> Bengaluru, India</li>
+                                    </ul>
+                                </div>
+                                <div class="col-4 col-md-12">
+                                    <div class="contact-buttons">
+                                        <button class="btn btn-primary"><i class="fas fa-paper-plane"></i> Contact Us</button>
+                                        <button class="btn btn-outline"><i class="fas fa-download"></i> Download Brochure</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Urban Transport Analytics</h3>
+                    <p>Advanced analytics and optimization platform for urban transportation networks.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#dashboard">Dashboard</a></li>
+                        <li><a href="#route-planner">Routes</a></li>
+                        <li><a href="#analytics">Analytics</a></li>
+                        <li><a href="#traffic">Traffic</a></li>
+                        <li><a href="#optimization">Optimization</a></li>
+                        <li><a href="#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-envelope"></i> info@urbantransport.com</li>
+                        <li><i class="fas fa-phone"></i> +91 123 456 7890</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Bengaluru, India</li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Follow Us</h3>
+                    <ul class="social-links">
+                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Urban Transport Analytics. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Page Transition Effect -->
+    <div class="page-transition"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="js/main.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/traffic_charts.js"></script>
+    <script src="js/analytics_charts.js"></script>
+    <script src="js/charts_loader.js"></script>
+    <script>
+        // JavaScript for map initialization and resizing
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize maps
+            initTrafficMap();
+            initRouteMap();
+            
+            // Set up event listener for the Plan Journey button
+            const planJourneyBtn = document.getElementById('plan-journey');
+            if (planJourneyBtn) {
+                planJourneyBtn.addEventListener('click', function() {
+                    const origin = document.getElementById('origin').value;
+                    const destination = document.getElementById('destination').value;
+                    showRoute(origin, destination);
+                });
+            }
+            
+            // Handle window resize for responsive maps
+            window.addEventListener('resize', function() {
+                if (document.getElementById('traffic-map')) {
+                    // Force redraw of the traffic map
+                    setTimeout(function() {
+                        window.dispatchEvent(new Event('resize'));
+                    }, 500);
+                }
+                
+                if (document.getElementById('route-map')) {
+                    // Force redraw of the route map
+                    setTimeout(function() {
+                        window.dispatchEvent(new Event('resize'));
+                    }, 500);
+                }
+            });
+        });
+
+        // Initialize the traffic map
+        function initTrafficMap() {
+            // Check if the map element exists
+            const mapElement = document.getElementById('traffic-map');
+            if (!mapElement) return;
+            
+            // This is a placeholder for actual map initialization
+            // In a real application, you would use a mapping library like Leaflet or Google Maps
+            
+            // For demonstration purposes, let's add a colored background
+            mapElement.style.background = 'linear-gradient(135deg, #3498db 0%, #2c3e50 100%)';
+            
+            // Add a placeholder message
+            const placeholderDiv = document.createElement('div');
+            placeholderDiv.style.position = 'absolute';
+            placeholderDiv.style.top = '50%';
+            placeholderDiv.style.left = '50%';
+            placeholderDiv.style.transform = 'translate(-50%, -50%)';
+            placeholderDiv.style.color = 'white';
+            placeholderDiv.style.fontWeight = 'bold';
+            placeholderDiv.style.textAlign = 'center';
+            placeholderDiv.style.width = '80%';
+            placeholderDiv.innerHTML = 'Traffic Map<br>This would display a real-time traffic map in a production environment';
+            
+            mapElement.appendChild(placeholderDiv);
+        }
+        
+        // Initialize the route map
+        function initRouteMap() {
+            // Check if the map element exists
+            const mapElement = document.getElementById('route-map');
+            if (!mapElement) return;
+            
+            // This is a placeholder for actual map initialization
+            // In a real application, you would use a mapping library like Leaflet or Google Maps
+            
+            // For demonstration purposes, let's add a colored background
+            mapElement.style.background = 'linear-gradient(135deg, #3498db 0%, #2c3e50 100%)';
+            
+            // Add a placeholder message
+            const placeholderDiv = document.createElement('div');
+            placeholderDiv.style.position = 'absolute';
+            placeholderDiv.style.top = '50%';
+            placeholderDiv.style.left = '50%';
+            placeholderDiv.style.transform = 'translate(-50%, -50%)';
+            placeholderDiv.style.color = 'white';
+            placeholderDiv.style.fontWeight = 'bold';
+            placeholderDiv.style.textAlign = 'center';
+            placeholderDiv.style.width = '80%';
+            placeholderDiv.innerHTML = 'Route Map<br>Select origin and destination to see the route';
+            
+            mapElement.appendChild(placeholderDiv);
+        }
+        
+        // Show route between two points with pins
+        function showRoute(origin, destination) {
+            // Show loading indicator
+            document.getElementById('loading').style.display = 'flex';
+            
+            // Hide error message if visible
+            document.getElementById('error-message').style.display = 'none';
+            
+            // Check if we should show alternatives
+            const showAlternatives = document.getElementById('show-alternatives').checked;
+            
+            // Simulate API call delay
+            setTimeout(function() {
+                // Hide loading indicator
+                document.getElementById('loading').style.display = 'none';
+                
+                // Show results
+                document.getElementById('results').style.display = 'block';
+                
+                // Update route title
+                document.getElementById('route-title').textContent = origin + ' to ' + destination;
+                
+                // Update route stats (these would come from the API in a real app)
+                document.getElementById('time-value').textContent = Math.floor(Math.random() * 60 + 20) + 'm';
+                document.getElementById('distance-value').textContent = (Math.random() * 15 + 5).toFixed(1) + ' km';
+                document.getElementById('fare-value').textContent = '₹' + Math.floor(Math.random() * 50 + 20);
+                document.getElementById('transfers-value').textContent = Math.floor(Math.random() * 3);
+                
+                // Update route steps
+                const routeSteps = document.getElementById('route-steps');
+                routeSteps.innerHTML = '';
+                
+                // Add steps (these would come from the API in a real app)
+                const steps = [
+                    { type: 'walk', description: 'Walk to ' + origin + ' Bus Terminal', duration: '5 min' },
+                    { type: 'bus', description: 'Take Bus 500C towards MG Road', duration: '15 min' },
+                    { type: 'transfer', description: 'Transfer at Central Bus Station', duration: '3 min' },
+                    { type: 'bus', description: 'Take Bus 401 towards ' + destination, duration: '12 min' },
+                    { type: 'walk', description: 'Walk to your destination in ' + destination, duration: '7 min' }
+                ];
+                
+                steps.forEach(function(step) {
+                    const stepElement = document.createElement('div');
+                    stepElement.className = 'route-step ' + step.type;
+                    
+                    const icon = document.createElement('div');
+                    icon.className = 'step-icon';
+                    let iconClass = '';
+                    
+                    switch(step.type) {
+                        case 'walk':
+                            iconClass = 'fas fa-walking';
+                            break;
+                        case 'bus':
+                            iconClass = 'fas fa-bus';
+                            break;
+                        case 'transfer':
+                            iconClass = 'fas fa-exchange-alt';
+                            break;
+                    }
+                    
+                    icon.innerHTML = '<i class="' + iconClass + '"></i>';
+                    
+                    const content = document.createElement('div');
+                    content.className = 'step-content';
+                    content.innerHTML = '<div class="step-description">' + step.description + '</div>' +
+                                       '<div class="step-duration">' + step.duration + '</div>';
+                    
+                    stepElement.appendChild(icon);
+                    stepElement.appendChild(content);
+                    routeSteps.appendChild(stepElement);
+                });
+                
+                // Update the map with the route and pins
+                updateRouteMap(origin, destination, false, false, null);
+                
+                // Show alternative routes if requested
+                const alternativeRoutesContainer = document.getElementById('alternative-routes');
+                alternativeRoutesContainer.innerHTML = '';
+                
+                if (showAlternatives) {
+                    // Create alternative routes (4 alternatives)
+                    const alternativeRoutes = [
+                        {
+                            title: 'Alternative 1: Via Metro',
+                            time: Math.floor(Math.random() * 60 + 25) + 'm',
+                            distance: (Math.random() * 15 + 6).toFixed(1) + ' km',
+                            fare: '₹' + Math.floor(Math.random() * 50 + 25),
+                            transfers: 1,
+                            steps: [
+                                { type: 'walk', description: 'Walk to ' + origin + ' Metro Station', duration: '8 min' },
+                                { type: 'bus', description: 'Take Metro Line A towards MG Road', duration: '12 min' },
+                                { type: 'transfer', description: 'Transfer at Central Metro Station', duration: '4 min' },
+                                { type: 'bus', description: 'Take Metro Line B towards ' + destination, duration: '10 min' },
+                                { type: 'walk', description: 'Walk to your destination in ' + destination, duration: '5 min' }
+                            ]
+                        },
+                        {
+                            title: 'Alternative 2: Express Route',
+                            time: Math.floor(Math.random() * 60 + 30) + 'm',
+                            distance: (Math.random() * 15 + 7).toFixed(1) + ' km',
+                            fare: '₹' + Math.floor(Math.random() * 50 + 30),
+                            transfers: 0,
+                            steps: [
+                                { type: 'walk', description: 'Walk to ' + origin + ' Express Terminal', duration: '10 min' },
+                                { type: 'bus', description: 'Take Express Bus E1 directly to ' + destination, duration: '25 min' },
+                                { type: 'walk', description: 'Walk to your destination in ' + destination, duration: '8 min' }
+                            ]
+                        },
+                        {
+                            title: 'Alternative 3: Bus Route via Ring Road',
+                            time: Math.floor(Math.random() * 60 + 35) + 'm',
+                            distance: (Math.random() * 15 + 8).toFixed(1) + ' km',
+                            fare: '₹' + Math.floor(Math.random() * 50 + 20),
+                            transfers: 1,
+                            steps: [
+                                { type: 'walk', description: 'Walk to ' + origin + ' Bus Stop', duration: '6 min' },
+                                { type: 'bus', description: 'Take Bus 300A towards Ring Road', duration: '18 min' },
+                                { type: 'transfer', description: 'Transfer at Ring Road Junction', duration: '5 min' },
+                                { type: 'bus', description: 'Take Bus 205 towards ' + destination, duration: '14 min' },
+                                { type: 'walk', description: 'Walk to your destination in ' + destination, duration: '4 min' }
+                            ]
+                        },
+                        {
+                            title: 'Alternative 4: Direct Bus Route',
+                            time: Math.floor(Math.random() * 60 + 40) + 'm',
+                            distance: (Math.random() * 15 + 5).toFixed(1) + ' km',
+                            fare: '₹' + Math.floor(Math.random() * 50 + 15),
+                            transfers: 0,
+                            steps: [
+                                { type: 'walk', description: 'Walk to ' + origin + ' Main Bus Stop', duration: '9 min' },
+                                { type: 'bus', description: 'Take Bus 101 directly to ' + destination + ' via Old City Road', duration: '32 min' },
+                                { type: 'walk', description: 'Walk to your destination in ' + destination, duration: '6 min' }
+                            ]
+                        }
+                    ];
+                    
+                    // Create alternative route cards
+                    alternativeRoutes.forEach(function(route, index) {
+                        const routeCard = document.createElement('div');
+                        routeCard.className = 'route-card alternative-route';
+                        
+                        // Create route header
+                        const routeHeader = document.createElement('div');
+                        routeHeader.className = 'route-header';
+                        routeHeader.innerHTML = '<div class="route-title">' + route.title + '</div>';
+                        
+                        // Create route stats
+                        const routeStats = document.createElement('div');
+                        routeStats.className = 'route-stats';
+                        routeStats.innerHTML = `
+                            <div class="stat">
+                                <div class="stat-value">${route.time}</div>
+                                <div class="stat-label">Total Time</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${route.distance}</div>
+                                <div class="stat-label">Distance</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${route.fare}</div>
+                                <div class="stat-label">Fare</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${route.transfers}</div>
+                                <div class="stat-label">Transfers</div>
+                            </div>
+                        `;
+                        
+                        // Create route steps
+                        const routeSteps = document.createElement('div');
+                        routeSteps.className = 'route-steps';
+                        
+                        route.steps.forEach(function(step) {
+                            const stepElement = document.createElement('div');
+                            stepElement.className = 'route-step ' + step.type;
+                            
+                            const icon = document.createElement('div');
+                            icon.className = 'step-icon';
+                            let iconClass = '';
+                            
+                            switch(step.type) {
+                                case 'walk':
+                                    iconClass = 'fas fa-walking';
+                                    break;
+                                case 'bus':
+                                    iconClass = 'fas fa-bus';
+                                    break;
+                                case 'transfer':
+                                    iconClass = 'fas fa-exchange-alt';
+                                    break;
+                            }
+                            
+                            icon.innerHTML = '<i class="' + iconClass + '"></i>';
+                            
+                            const content = document.createElement('div');
+                            content.className = 'step-content';
+                            content.innerHTML = '<div class="step-description">' + step.description + '</div>' +
+                                               '<div class="step-duration">' + step.duration + '</div>';
+                            
+                            stepElement.appendChild(icon);
+                            stepElement.appendChild(content);
+                            routeSteps.appendChild(stepElement);
+                        });
+                        
+                        // Create select button
+                        const selectButton = document.createElement('div');
+                        selectButton.className = 'select-route-btn';
+                        const btn = document.createElement('button');
+                        btn.className = 'btn btn-outline-primary';
+                        btn.textContent = 'Select This Route';
+                        btn.addEventListener('click', function() {
+                            // Scroll to the top of the results
+                            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+                            
+                            // Update the primary route with this alternative
+                            document.getElementById('route-title').textContent = route.title;
+                            document.getElementById('time-value').textContent = route.time;
+                            document.getElementById('distance-value').textContent = route.distance;
+                            document.getElementById('fare-value').textContent = route.fare;
+                            document.getElementById('transfers-value').textContent = route.transfers;
+                            
+                            // Update route steps
+                            const primaryRouteSteps = document.getElementById('route-steps');
+                            primaryRouteSteps.innerHTML = '';
+                            
+                            route.steps.forEach(function(step) {
+                                const stepElement = document.createElement('div');
+                                stepElement.className = 'route-step ' + step.type;
+                                
+                                const icon = document.createElement('div');
+                                icon.className = 'step-icon';
+                                let iconClass = '';
+                                
+                                switch(step.type) {
+                                    case 'walk':
+                                        iconClass = 'fas fa-walking';
+                                        break;
+                                    case 'bus':
+                                        iconClass = 'fas fa-bus';
+                                        break;
+                                    case 'transfer':
+                                        iconClass = 'fas fa-exchange-alt';
+                                        break;
+                                }
+                                
+                                icon.innerHTML = '<i class="' + iconClass + '"></i>';
+                                
+                                const content = document.createElement('div');
+                                content.className = 'step-content';
+                                content.innerHTML = '<div class="step-description">' + step.description + '</div>' +
+                                                   '<div class="step-duration">' + step.duration + '</div>';
+                                
+                                stepElement.appendChild(icon);
+                                stepElement.appendChild(content);
+                                primaryRouteSteps.appendChild(stepElement);
+                            });
+                            
+                            // Update the map
+                            updateRouteMap(origin, destination, route.title.includes('Metro'), route.title.includes('Express'), route);
+                        });
+                        selectButton.appendChild(btn);
+                        
+                        // Add all elements to the route card
+                        routeCard.appendChild(routeHeader);
+                        routeCard.appendChild(routeStats);
+                        routeCard.appendChild(routeSteps);
+                        routeCard.appendChild(selectButton);
+                        
+                        // Add the route card to the container
+                        alternativeRoutesContainer.appendChild(routeCard);
+                    });
+                }
+                
+            }, 1500); // Simulate 1.5 second delay for API call
+        }
+        
+        // Update the route map with pins and route line
+        function updateRouteMap(origin, destination, isMetro = false, isExpress = false, route = null) {
+            const mapElement = document.getElementById('route-map');
+            if (!mapElement) return;
+            
+            // Clear previous content
+            mapElement.innerHTML = '';
+            
+            // For demonstration purposes, let's add a colored background
+            mapElement.style.background = 'linear-gradient(135deg, #3498db 0%, #2c3e50 100%)';
+            
+            // Create a container for the map content
+            const mapContent = document.createElement('div');
+            mapContent.style.position = 'relative';
+            mapContent.style.width = '100%';
+            mapContent.style.height = '100%';
+            
+            // Add origin pin
+            const originPin = createPin(origin, 20, 30);
+            originPin.style.left = '20%';
+            originPin.style.top = '40%';
+            
+            // Add destination pin
+            const destPin = createPin(destination, 80, 60);
+            destPin.style.left = '75%';
+            destPin.style.top = '30%';
+            
+            if (isMetro) {
+                // Metro route (different path with multiple segments)
+                
+                // First segment
+                const routeLine1 = document.createElement('div');
+                routeLine1.style.position = 'absolute';
+                routeLine1.style.height = '4px';
+                routeLine1.style.backgroundColor = '#e74c3c';
+                routeLine1.style.top = '45%';
+                routeLine1.style.left = '25%';
+                routeLine1.style.width = '25%';
+                routeLine1.style.zIndex = '1';
+                
+                // Second segment
+                const routeLine2 = document.createElement('div');
+                routeLine2.style.position = 'absolute';
+                routeLine2.style.height = '4px';
+                routeLine2.style.backgroundColor = '#9b59b6';
+                routeLine2.style.top = '45%';
+                routeLine2.style.left = '50%';
+                routeLine2.style.width = '25%';
+                routeLine2.style.zIndex = '1';
+                
+                // Add transfer point
+                const transfer = createPin('Transfer', 50, 45);
+                transfer.style.left = '50%';
+                transfer.style.top = '35%';
+                transfer.style.zIndex = '3';
+                transfer.querySelector('.pin-label').style.fontSize = '10px';
+                
+                // Add metro stations
+                const station1 = createPin('Metro A', 35, 45);
+                station1.style.left = '35%';
+                station1.style.top = '30%';
+                station1.style.zIndex = '2';
+                station1.querySelector('.pin-label').style.fontSize = '10px';
+                
+                const station2 = createPin('Metro B', 65, 45);
+                station2.style.left = '65%';
+                station2.style.top = '30%';
+                station2.style.zIndex = '2';
+                station2.querySelector('.pin-label').style.fontSize = '10px';
+                
+                // Add elements to the map
+                mapContent.appendChild(routeLine1);
+                mapContent.appendChild(routeLine2);
+                mapContent.appendChild(originPin);
+                mapContent.appendChild(destPin);
+                mapContent.appendChild(transfer);
+                mapContent.appendChild(station1);
+                mapContent.appendChild(station2);
+            } else if (isExpress) {
+                // Express route (direct path)
+                
+                // Add curved route line for express route
+                const routeLine = document.createElement('div');
+                routeLine.style.position = 'absolute';
+                routeLine.style.height = '4px';
+                routeLine.style.backgroundColor = '#f39c12';
+                routeLine.style.top = '45%';
+                routeLine.style.left = '25%';
+                routeLine.style.width = '50%';
+                routeLine.style.zIndex = '1';
+                routeLine.style.borderRadius = '50%';
+                routeLine.style.transform = 'translateY(-10px)';
+                
+                // Add express bus stop
+                const expressStop = createPin('Express', 50, 45);
+                expressStop.style.left = '50%';
+                expressStop.style.top = '25%';
+                expressStop.style.zIndex = '2';
+                expressStop.querySelector('.pin-label').style.fontSize = '10px';
+                expressStop.querySelector('.pin-icon').style.backgroundColor = '#f39c12';
+                
+                // Add elements to the map
+                mapContent.appendChild(routeLine);
+                mapContent.appendChild(originPin);
+                mapContent.appendChild(destPin);
+                mapContent.appendChild(expressStop);
+            } else if (route && route.title && route.title.includes('Ring Road')) {
+                // Ring Road route (different path with zigzag)
+                
+                // First segment
+                const routeLine1 = document.createElement('div');
+                routeLine1.style.position = 'absolute';
+                routeLine1.style.height = '4px';
+                routeLine1.style.backgroundColor = '#27ae60';
+                routeLine1.style.top = '40%';
+                routeLine1.style.left = '25%';
+                routeLine1.style.width = '20%';
+                routeLine1.style.zIndex = '1';
+                routeLine1.style.transform = 'rotate(-15deg)';
+                
+                // Second segment
+                const routeLine2 = document.createElement('div');
+                routeLine2.style.position = 'absolute';
+                routeLine2.style.height = '4px';
+                routeLine2.style.backgroundColor = '#27ae60';
+                routeLine2.style.top = '35%';
+                routeLine2.style.left = '45%';
+                routeLine2.style.width = '15%';
+                routeLine2.style.zIndex = '1';
+                routeLine2.style.transform = 'rotate(30deg)';
+                
+                // Third segment
+                const routeLine3 = document.createElement('div');
+                routeLine3.style.position = 'absolute';
+                routeLine3.style.height = '4px';
+                routeLine3.style.backgroundColor = '#27ae60';
+                routeLine3.style.top = '45%';
+                routeLine3.style.left = '60%';
+                routeLine3.style.width = '15%';
+                routeLine3.style.zIndex = '1';
+                routeLine3.style.transform = 'rotate(-20deg)';
+                
+                // Add junction point
+                const junction = createPin('Junction', 45, 35);
+                junction.style.left = '45%';
+                junction.style.top = '30%';
+                junction.style.zIndex = '3';
+                junction.querySelector('.pin-label').style.fontSize = '10px';
+                
+                // Add bus stops
+                const busStop1 = createPin('Bus 300A', 35, 40);
+                busStop1.style.left = '35%';
+                busStop1.style.top = '35%';
+                busStop1.style.zIndex = '2';
+                busStop1.querySelector('.pin-label').style.fontSize = '10px';
+                
+                const busStop2 = createPin('Bus 205', 65, 45);
+                busStop2.style.left = '65%';
+                busStop2.style.top = '40%';
+                busStop2.style.zIndex = '2';
+                busStop2.querySelector('.pin-label').style.fontSize = '10px';
+                
+                // Add elements to the map
+                mapContent.appendChild(routeLine1);
+                mapContent.appendChild(routeLine2);
+                mapContent.appendChild(routeLine3);
+                mapContent.appendChild(originPin);
+                mapContent.appendChild(destPin);
+                mapContent.appendChild(junction);
+                mapContent.appendChild(busStop1);
+                mapContent.appendChild(busStop2);
+            } else if (route && route.title && route.title.includes('Direct Bus')) {
+                // Direct bus route (slightly curved path)
+                
+                // Add route line
+                const routeLine = document.createElement('div');
+                routeLine.style.position = 'absolute';
+                routeLine.style.height = '4px';
+                routeLine.style.backgroundColor = '#3498db';
+                routeLine.style.top = '45%';
+                routeLine.style.left = '25%';
+                routeLine.style.width = '50%';
+                routeLine.style.zIndex = '1';
+                routeLine.style.borderRadius = '100%';
+                routeLine.style.transform = 'translateY(5px)';
+                
+                // Add bus stop
+                const busStop = createPin('Bus 101', 50, 45);
+                busStop.style.left = '50%';
+                busStop.style.top = '50%';
+                busStop.style.zIndex = '2';
+                busStop.querySelector('.pin-label').style.fontSize = '10px';
+                busStop.querySelector('.pin-icon').style.backgroundColor = '#3498db';
+                
+                // Add elements to the map
+                mapContent.appendChild(routeLine);
+                mapContent.appendChild(originPin);
+                mapContent.appendChild(destPin);
+                mapContent.appendChild(busStop);
+            } else {
+                // Regular bus route
+                
+                // Add route line
+                const routeLine = document.createElement('div');
+                routeLine.style.position = 'absolute';
+                routeLine.style.height = '4px';
+                routeLine.style.backgroundColor = '#4CAF50';
+                routeLine.style.top = '45%';
+                routeLine.style.left = '25%';
+                routeLine.style.width = '50%';
+                routeLine.style.zIndex = '1';
+                
+                // Add waypoint for bus route
+                const waypoint = createPin('Transfer', 50, 45);
+                waypoint.style.left = '48%';
+                waypoint.style.top = '35%';
+                waypoint.style.zIndex = '3';
+                waypoint.querySelector('.pin-label').style.fontSize = '10px';
+                
+                // Add elements to the map
+                mapContent.appendChild(routeLine);
+                mapContent.appendChild(originPin);
+                mapContent.appendChild(destPin);
+                mapContent.appendChild(waypoint);
+            }
+            
+            // Add a legend
+            const legend = document.createElement('div');
+            legend.style.position = 'absolute';
+            legend.style.bottom = '10px';
+            legend.style.right = '10px';
+            legend.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+            legend.style.padding = '5px 10px';
+            legend.style.borderRadius = '5px';
+            legend.style.fontSize = '12px';
+            legend.style.color = '#333';
+            legend.style.zIndex = '5';
+            if (isMetro) {
+                legend.innerHTML = '<div><span style="color:#e74c3c;">━━━</span> Metro Line A</div>' +
+                                  '<div><span style="color:#9b59b6;">━━━</span> Metro Line B</div>';
+            } else if (isExpress) {
+                legend.innerHTML = '<div><span style="color:#f39c12;">━━━</span> Express Route</div>';
+            } else if (route && route.title && route.title.includes('Ring Road')) {
+                legend.innerHTML = '<div><span style="color:#27ae60;">━━━</span> Ring Road Route</div>';
+            } else if (route && route.title && route.title.includes('Direct Bus')) {
+                legend.innerHTML = '<div><span style="color:#3498db;">━━━</span> Direct Bus Route</div>';
+            } else {
+                legend.innerHTML = '<div><span style="color:#4CAF50;">━━━</span> Bus Route</div>';
+            }
+            
+            mapContent.appendChild(legend);
+            
+            mapElement.appendChild(mapContent);
+        }
+        
+        // Helper function to create a pin with label
+        function createPin(label, x, y) {
+            const pin = document.createElement('div');
+            pin.className = 'map-pin';
+            pin.style.position = 'absolute';
+            pin.style.zIndex = '2';
+            
+            const pinIcon = document.createElement('div');
+            pinIcon.className = 'pin-icon';
+            pinIcon.style.width = '20px';
+            pinIcon.style.height = '20px';
+            pinIcon.style.borderRadius = '50%';
+            pinIcon.style.backgroundColor = '#e74c3c';
+            pinIcon.style.border = '2px solid white';
+            pinIcon.style.boxShadow = '0 2px 5px rgba(0,0,0,0.3)';
+            
+            const pinLabel = document.createElement('div');
+            pinLabel.className = 'pin-label';
+            pinLabel.textContent = label;
+            pinLabel.style.color = 'white';
+            pinLabel.style.fontWeight = 'bold';
+            pinLabel.style.fontSize = '12px';
+            pinLabel.style.marginTop = '5px';
+            pinLabel.style.textShadow = '0 1px 3px rgba(0,0,0,0.7)';
+            pinLabel.style.whiteSpace = 'nowrap';
+            
+            pin.appendChild(pinIcon);
+            pin.appendChild(pinLabel);
+            
+            return pin;
+        }
+    </script>
+</body>
+</html>
